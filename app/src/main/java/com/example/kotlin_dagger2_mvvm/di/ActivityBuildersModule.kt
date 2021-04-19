@@ -10,11 +10,4 @@ abstract class ActivityBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeAuthActivity() : AuthActivity
-
-    companion object{
-        @Provides
-        fun someString() : String{
-            return "Some String to understand what happen"
-        }
-    }
 }
