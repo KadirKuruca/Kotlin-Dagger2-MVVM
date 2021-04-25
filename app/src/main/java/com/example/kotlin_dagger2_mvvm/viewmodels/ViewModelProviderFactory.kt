@@ -8,17 +8,13 @@ import javax.inject.Provider
 
 private const val TAG = "ViewModelProviderFactor"
 
-class ViewModelProviderFactory @Inject constructor(creators: Map<Class<out ViewModel?>?, Provider<ViewModel?>?>?)
-    : ViewModelProvider.Factory{
-
-    private var creators: Map<Class<out ViewModel>, Provider<ViewModel>>? = null
-
+class ViewModelProviderFactory @Inject constructor(private val creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        var creator: Provider<out ViewModel?>? = creators!![modelClass]
+        var creator: Provider<out ViewModel>? = creators[modelClass]
         if (creator == null) { // if the viewmodel has not been created
 
             // loop through the allowable keys (aka allowed classes with the @ViewModelKey)
-            for ((key, value) in creators!!.entries) {
+            for ((key, value) in creators) {
 
                 // if it's allowed, set the Provider<ViewModel>
                 if (modelClass.isAssignableFrom(key)) {
