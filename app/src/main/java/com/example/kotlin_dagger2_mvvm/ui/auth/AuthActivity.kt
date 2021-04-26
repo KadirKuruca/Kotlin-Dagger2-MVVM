@@ -1,4 +1,4 @@
-package com.example.kotlin_dagger2_mvvm.ui.Auth
+package com.example.kotlin_dagger2_mvvm.ui.auth
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle

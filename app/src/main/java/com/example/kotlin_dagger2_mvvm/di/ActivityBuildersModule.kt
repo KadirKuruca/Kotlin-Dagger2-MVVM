@@ -1,7 +1,8 @@
 package com.example.kotlin_dagger2_mvvm.di
 
+import com.example.kotlin_dagger2_mvvm.di.auth.AuthModule
 import com.example.kotlin_dagger2_mvvm.di.auth.AuthViewModelsModule
-import com.example.kotlin_dagger2_mvvm.ui.Auth.AuthActivity
+import com.example.kotlin_dagger2_mvvm.ui.auth.AuthActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -9,7 +10,10 @@ import dagger.android.ContributesAndroidInjector
 abstract class ActivityBuildersModule {
 
     @ContributesAndroidInjector(
-        modules = [AuthViewModelsModule::class]
+        modules = [
+            AuthViewModelsModule::class,
+            AuthModule::class
+        ]
     )
     abstract fun contributeAuthActivity() : AuthActivity
 }
