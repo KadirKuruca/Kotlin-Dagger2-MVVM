@@ -1,38 +1,39 @@
 package com.example.kotlin_dagger2_mvvm.ui.auth
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.LiveDataReactiveStreams
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.example.kotlin_dagger2_mvvm.models.User
 import com.example.kotlin_dagger2_mvvm.networking.auth.AuthApi
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class AuthViewModel @Inject constructor(authApi: AuthApi)  : ViewModel() {
+private const val TAG2 = "AuthViewModel"
+class AuthViewModel @Inject constructor(private val authApi: AuthApi)  : ViewModel() {
+
+    private var authUser = MediatorLiveData<User>()
 
     init {
-        Log.e(TAG, "AuthViewModel: is creating and working")
+        Log.e(TAG2, "AuthViewModel: is creating and working")
+    }
 
-        authApi.getUser(1)
-                .toObservable()
+    fun authenticateWithId(userId : Int){
+        val source : LiveData<User> = LiveDataReactiveStreams.fromPublisher(
+                authApi.getUser(userId)
                 .subscribeOn(Schedulers.io())
-                .subscribe(object : Observer<User> {
-                    override fun onSubscribe(d: Disposable?) {
-                    }
+        )
+        authUser.addSource(source, object : Observer<User> {
+            override fun onChanged(t: User?) {
+                authUser.value = t
+                authUser.removeSource(source)
+            }
+        })
+    }
 
-                    override fun onNext(value: User?) {
-                        Log.e(TAG, "onNext: "+value?.email )
-                    }
-
-                    override fun onError(e: Throwable?) {
-                        Log.e(TAG, "onError: "+e.toString())
-                    }
-
-                    override fun onComplete() {
-                        
-                    }
-
-                })
+    fun observeUser() : LiveData<User>{
+        return authUser
     }
 }
